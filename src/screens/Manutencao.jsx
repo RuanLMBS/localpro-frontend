@@ -1,41 +1,47 @@
+import { useState, useEffect } from 'react'
 import { Topbar, Badge, Icon } from '../components/ui'
-import { STATUS, diasParado } from '../data'
+import api from '../services/api'
 
-export default function Manutencao({ equipamentos, onAction }) {
-  const list = equipamentos.filter((e) => e.status === STATUS.MANUTENCAO)
+export default function Manutencao({ onAction }) {
+  const [manutencoes, setManutencoes] = useState([])
+
+  useEffect(() => {
+    // Busca as manutenções ativas diretamente do backend
+    api.get('/manutencao/ativas')
+      .then(res => setManutencoes(res.data))
+      .catch(err => console.error("Erro ao carregar manutenções:", err))
+  }, [])
+
   return (
     <div className="main">
-      <Topbar title="Manutenção" subtitle="Ativos bloqueados aguardando reparo">
-        <div className="search">
-          <Icon.search width={17} height={17} />
-          <input placeholder="Buscar…" />
-        </div>
+      <Topbar title="Manutenções" subtitle="Equipamentos em reparo">
+        <button className="btn primary"><Icon.plus width={16} height={16} /> Nova ordem</button>
       </Topbar>
+
       <div className="content">
         <div className="panel">
-          <div className="panel-head">
-            <div className="tabs"><button className="tab active">Em manutenção</button></div>
-            <div className="grow" />
-            <button className="sort-btn"><Icon.sort width={15} height={15} /> Ordenar</button>
-          </div>
           <table className="table">
             <thead>
-              <tr><th>Equipamento</th><th>Avaria</th><th>Entrou em</th><th>Dias parado</th><th className="right">Ações</th></tr>
+              <tr><th>Equipamento</th><th>Avaria</th><th>Entrada</th><th className="right">Ações</th></tr>
             </thead>
             <tbody>
-              {list.map((e) => {
-                const dias = diasParado(e.manutencaoDesde)
-                return (
-                  <tr key={e.id}>
-                    <td><div className="cell-strong">{e.nome}</div><div className="cell-sub">#{e.id}</div></td>
-                    <td>{e.avaria}</td>
-                    <td>{e.manutencaoDesde}</td>
-                    <td><Badge label={`${dias} dias`} color={dias > 15 ? 'red' : 'amber'} /></td>
-                    <td className="right"><button className="btn sm primary" onClick={() => onAction('concluir', e)}>Concluir reparo</button></td>
-                  </tr>
-                )
-              })}
-              {list.length === 0 && <tr><td colSpan={5}><div className="empty">Nenhum equipamento em manutenção.</div></td></tr>}
+              {manutencoes.map((m) => (
+                <tr key={m.id}>
+                  <td>
+                    <div className="cell-strong">{m.equipamento.nome}</div>
+                    <div className="cell-sub">#{m.equipamento.numero_patrimonio}</div>
+                  </td>
+                  <td>{m.descricao_avaria}</td>
+                  {/* Garantimos que a data seja formatada corretamente vinda do banco */}
+                  <td>{m.data_entrada ? new Date(m.data_entrada).toLocaleDateString() : '-'}</td>
+                  <td className="right">
+                    <button className="btn sm ghost" onClick={() => onAction('concluir', m)}>Concluir Reparo</button>
+                  </td>
+                </tr>
+              ))}
+              {manutencoes.length === 0 && (
+                <tr><td colSpan={4}><div className="empty">Nenhuma manutenção em aberto.</div></td></tr>
+              )}
             </tbody>
           </table>
         </div>

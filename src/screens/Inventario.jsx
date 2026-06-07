@@ -1,21 +1,28 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Topbar, Kpi, StatusBadge, Icon } from '../components/ui'
-import { STATUS } from '../data'
+import api from '../services/api'
 
-const FILTERS = ['Todos', STATUS.DISPONIVEL, STATUS.ALUGADO, STATUS.MANUTENCAO]
+// Mantemos as constantes aqui para não depender de arquivos externos
+const FILTERS = ['Todos', 'Disponível', 'Alugado', 'Em Manutenção']
 
 function actionFor(status) {
-  if (status === STATUS.DISPONIVEL) return { label: 'Check-out', type: 'checkout', primary: true }
-  if (status === STATUS.ALUGADO) return { label: 'Check-in', type: 'checkin', primary: false }
+  if (status === 'Disponível') return { label: 'Check-out', type: 'checkout', primary: true }
+  if (status === 'Alugado') return { label: 'Check-in', type: 'checkin', primary: false }
   return { label: 'Concluir', type: 'concluir', primary: false }
 }
 
-export default function Inventario({ equipamentos, onOpenDetalhe, onAction, onNovo }) {
+export default function Inventario({ onOpenDetalhe, onAction, onNovo }) {
+  const [data, setData] = useState({ total: 0, disponiveis: 0, alugados: 0, manutencao: 0, equipamentos: [] })
   const [filter, setFilter] = useState('Todos')
   const [q, setQ] = useState('')
-  const list = equipamentos.filter((e) => {
-    const okF = filter === 'Todos' || e.status === filter
-    const okQ = !q || (e.nome + e.id).toLowerCase().includes(q.toLowerCase())
+
+  useEffect(() => {
+    api.get('/equipamentos/resumo').then(res => setData(res.data))
+  }, [])
+
+  const list = data.equipamentos.filter((e) => {
+    const okF = filter === 'Todos' || e.status_equipamento === filter
+    const okQ = !q || (e.nome + e.numero_patrimonio).toLowerCase().includes(q.toLowerCase())
     return okF && okQ
   })
 
@@ -31,10 +38,10 @@ export default function Inventario({ equipamentos, onOpenDetalhe, onAction, onNo
 
       <div className="content">
         <div className="kpi-row">
-          <Kpi label="Total de equipamentos" value="248" hint="Cadastrados na base" color="var(--blue)" />
-          <Kpi label="Disponíveis" value="156" hint="Prontos para locação" color="var(--green)" />
-          <Kpi label="Alugados" value="74" hint="Com clientes ativos" color="var(--violet)" />
-          <Kpi label="Em manutenção" value="18" hint="Bloqueados por avaria" color="var(--amber)" />
+          <Kpi label="Total de equipamentos" value={data.total} hint="Cadastrados na base" color="var(--blue)" />
+          <Kpi label="Disponíveis" value={data.disponiveis} hint="Prontos para locação" color="var(--green)" />
+          <Kpi label="Alugados" value={data.alugados} hint="Com clientes ativos" color="var(--violet)" />
+          <Kpi label="Em manutenção" value={data.manutencao} hint="Bloqueados por avaria" color="var(--amber)" />
         </div>
 
         <div className="panel">
@@ -55,19 +62,19 @@ export default function Inventario({ equipamentos, onOpenDetalhe, onAction, onNo
             </thead>
             <tbody>
               {list.map((e) => {
-                const act = actionFor(e.status)
+                const act = actionFor(e.status_equipamento)
                 return (
                   <tr key={e.id}>
                     <td>
-                      <div className="cell-name" onClick={() => onOpenDetalhe(e.id)}>
+                      <div className="cell-name" onClick={() => onOpenDetalhe(e)}>
                         <div className="cell-strong">{e.nome}</div>
-                        <div className="cell-sub">#{e.id}</div>
+                        <div className="cell-sub">#{e.numero_patrimonio}</div>
                       </div>
                     </td>
                     <td>{e.categoria}</td>
-                    <td><StatusBadge status={e.status} /></td>
+                    <td><StatusBadge status={e.status_equipamento} /></td>
                     <td>{e.cliente || <span className="dash">—</span>}</td>
-                    <td>{e.devolucao || <span className="dash">—</span>}</td>
+                    <td>{e.data_prevista_devolucao || <span className="dash">—</span>}</td>
                     <td className="right">
                       <button className={`btn sm ${act.primary ? 'primary' : 'ghost'}`} onClick={() => onAction(act.type, e)}>{act.label}</button>
                     </td>

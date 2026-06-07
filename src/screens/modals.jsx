@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Modal, Field, NativeSelect, StatusBadge, Badge } from '../components/ui'
 import { STATUS, CATEGORIAS, CLIENTES } from '../data'
+import api from '../services/api'
 
 function isoToBR(iso) {
   if (!iso) return ''
@@ -9,9 +10,14 @@ function isoToBR(iso) {
 }
 
 export function CheckOutModal({ item, onClose, onConfirm }) {
-  const [cliente, setCliente] = useState('')
-  const [data, setData] = useState('')
-  const ready = cliente && data
+  const [clientes, setClientes] = useState([]);
+  const [clienteId, setClienteId] = useState('');
+  const [data, setData] = useState('');
+
+  useEffect(() => {
+    api.get('/clientes/').then(res => setClientes(res.data));
+  }, []);
+  
   return (
     <Modal title="Check-out — Saída de equipamento" subtitle="Vincule o ativo a um cliente e defina a devolução" onClose={onClose}
       footer={<>
