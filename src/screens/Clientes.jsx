@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react'
 import { Topbar, Badge, Icon } from '../components/ui'
-import api from '../services/api' // Nosso canal de comunicação com o backend
+import api from '../services/api'
 
 const TABS = ['Todos', 'Ativos', 'Inativos']
 
-export default function Clientes() {
+export default function Clientes({ onNovo, onVerCliente }) {
   const [clientesAPI, setClientesAPI] = useState([])
   
   const [tab, setTab] = useState('Todos')
@@ -36,7 +36,7 @@ export default function Clientes() {
           <Icon.search width={17} height={17} />
           <input placeholder="Buscar cliente…" value={q} onChange={(e) => setQ(e.target.value)} />
         </div>
-        <button className="btn primary"><Icon.plus width={16} height={16} /> Novo cliente</button>
+        <button className="btn primary" onClick={onNovo}><Icon.plus width={16} height={16} /> Novo cliente</button>
       </Topbar>
       <div className="content">
         <div className="panel">
@@ -69,10 +69,10 @@ export default function Clientes() {
                     <div className="cell-sub">CNPJ {c.cnpj}</div>
                   </td>
                   <td>{c.telefone_contato || c.email_contato || '-'}</td>
-                  <td><span className="dash">-</span></td>
+                  <td><span className="dash">{c.equipamentos_ativos}</span></td>
                   
                   <td><Badge label={c.ativo ? 'Ativo' : 'Inativo'} color={c.ativo ? 'green' : 'muted'} /></td>
-                  <td className="right"><button className="btn sm ghost">Ver</button></td>
+                  <td className="right"><button className="btn sm ghost" onClick={() => onVerCliente(c)}>Ver</button></td>
                 </tr>
               ))}
               

@@ -36,7 +36,6 @@ Os fluxos alteram o estado de verdade; KPIs, Locações e Manutenção recalcula
 src/
   App.jsx              estado global, navegação, handlers das RN
   data.js              dados mock + helpers (status, prazo, dias parados)
-  avatar.js            foto de perfil (data URL)
   styles.css           tema dark + layout desktop
   components/ui.jsx    logo, ícones, badge, campos, modal, sidebar, topbar, KPI
   screens/             Login, Cadastro, Inventario, Detalhe, Clientes,

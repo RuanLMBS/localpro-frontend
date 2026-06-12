@@ -72,7 +72,6 @@ export default function Login({ onEnter, onGoCadastro }) {
               <span className={`cbox ${remember ? 'on' : ''}`}>{remember && <Icon.check width={12} height={12} />}</span>
               Lembrar de mim
             </label>
-            <a>Esqueci a senha</a>
           </div>
           <button type="submit" className="btn primary block">Entrar</button>
           <div className="form-foot">

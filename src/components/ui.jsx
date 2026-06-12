@@ -1,5 +1,7 @@
 import { STATUS_COLOR } from '../data'
+import { useState, useEffect } from 'react'
 import avatar from '../avatar'
+import api from '../services/api'
 
 /* ---------- Logo ---------- */
 export function LogoMark({ size = 30 }) {
@@ -110,9 +112,17 @@ const NAV = [
   { key: 'clientes', label: 'Clientes' },
   { key: 'locacoes', label: 'Locações' },
   { key: 'manutencao', label: 'Manutenção' },
-  { key: 'relatorios', label: 'Relatórios' },
 ]
-export function Sidebar({ active, onNav }) {
+
+export function Sidebar({ active, onNav, onLogout }) {
+  const [usuario, setUsuario] = useState({ nome: 'Carregando...', email: '' })
+
+  useEffect(() => {
+    api.get('/auth/me')
+      .then(res => setUsuario(res.data))
+      .catch(err => console.error("Erro ao carregar usuário:", err))
+  }, [])
+
   return (
     <aside className="sidebar">
       <Logo size={30} />
@@ -127,12 +137,20 @@ export function Sidebar({ active, onNav }) {
       </nav>
       <div className="nav-spacer" />
       <div className="user-card">
-        <div className="av" style={{ backgroundImage: `url(${avatar})` }} />
+        <div className="av" />
         <div>
-          <div className="nm">Louise Suarez</div>
+          <div className="nm">{usuario.nome}</div>
           <div className="rl">Gestor</div>
         </div>
       </div>
+      <button 
+          onClick={onLogout} 
+          className="btn sm ghost" 
+          title="Sair do sistema"
+          style={{ padding: '4px 8px', color: 'var(--red)', borderColor: 'transparent' }}
+        >
+          Sair
+        </button>
     </aside>
   )
 }

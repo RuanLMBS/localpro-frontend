@@ -13,7 +13,6 @@ export default function Locacoes({ onAction }) {
     api.get('/locacoes/ativas').then(res => setLocacoes(res.data))
   }, [])
 
-  // Função local para calcular o status do prazo
   const getPrazo = (dataDevolucao) => {
     const hoje = new Date();
     const data = new Date(dataDevolucao);
@@ -24,7 +23,7 @@ export default function Locacoes({ onAction }) {
   const list = locacoes.filter((loc) => {
     const p = getPrazo(loc.data_prevista_devolucao)
     const okT = tab === 'Todas' || (tab === 'Atrasadas' ? p.color === 'red' : p.color === 'green')
-    const okQ = !q || loc.equipamento.nome.toLowerCase().includes(q.toLowerCase())
+    const okQ = !q || loc.equipamento?.nome?.toLowerCase().includes(q.toLowerCase())
     return okT && okQ
   })
 
@@ -60,10 +59,10 @@ export default function Locacoes({ onAction }) {
                 return (
                   <tr key={loc.id}>
                     <td>
-                      <div className="cell-strong">{loc.equipamento.nome}</div>
-                      <div className="cell-sub">#{loc.equipamento.numero_patrimonio}</div>
+                      <div className="cell-strong">{loc.equipamento?.nome || `ID: ${loc.equipamento_id}`}</div>
+                      <div className="cell-sub">#{loc.equipamento?.numero_patrimonio || '---'}</div>
                     </td>
-                    <td>{loc.cliente.nome_razao_social}</td>
+                    <td>{loc.cliente?.nome_razao_social || `ID: ${loc.cliente_id}`}</td>
                     <td>{new Date(loc.data_saida).toLocaleDateString()}</td>
                     <td>{new Date(loc.data_prevista_devolucao).toLocaleDateString()}</td>
                     <td><Badge label={p.label} color={p.color} /></td>

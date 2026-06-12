@@ -74,7 +74,11 @@ export default function Inventario({ onOpenDetalhe, onAction, onNovo }) {
                     <td>{e.categoria}</td>
                     <td><StatusBadge status={e.status_equipamento} /></td>
                     <td>{e.cliente || <span className="dash">—</span>}</td>
-                    <td>{e.data_prevista_devolucao || <span className="dash">—</span>}</td>
+                    <td>
+                      {e.data_prevista_devolucao 
+                        ? new Date(e.data_prevista_devolucao).toLocaleDateString('pt-BR', { timeZone: 'UTC' }) 
+                        : <span className="dash">—</span>}
+                    </td>
                     <td className="right">
                       <button className={`btn sm ${act.primary ? 'primary' : 'ghost'}`} onClick={() => onAction(act.type, e)}>{act.label}</button>
                     </td>

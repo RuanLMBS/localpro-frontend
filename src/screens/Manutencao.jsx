@@ -6,7 +6,6 @@ export default function Manutencao({ onAction }) {
   const [manutencoes, setManutencoes] = useState([])
 
   useEffect(() => {
-    // Busca as manutenções ativas diretamente do backend
     api.get('/manutencao/ativas')
       .then(res => setManutencoes(res.data))
       .catch(err => console.error("Erro ao carregar manutenções:", err))
@@ -28,11 +27,10 @@ export default function Manutencao({ onAction }) {
               {manutencoes.map((m) => (
                 <tr key={m.id}>
                   <td>
-                    <div className="cell-strong">{m.equipamento.nome}</div>
-                    <div className="cell-sub">#{m.equipamento.numero_patrimonio}</div>
+                    <div className="cell-strong">{m.equipamento?.nome}</div>
+                    <div className="cell-sub">#{m.equipamento?.numero_patrimonio}</div>
                   </td>
                   <td>{m.descricao_avaria}</td>
-                  {/* Garantimos que a data seja formatada corretamente vinda do banco */}
                   <td>{m.data_entrada ? new Date(m.data_entrada).toLocaleDateString() : '-'}</td>
                   <td className="right">
                     <button className="btn sm ghost" onClick={() => onAction('concluir', m)}>Concluir Reparo</button>
