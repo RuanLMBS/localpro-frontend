@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Modal, Field, NativeSelect, StatusBadge, Badge } from '../components/ui'
 import api from '../services/api'
 
-const CATEGORIAS_FIXAS = ['Ferramentas Elétricas', 'Betoneiras', 'Andaimagens', 'Geradores', 'Geral']
+const CATEGORIAS_FIXAS = ['Projetor','Tela de Projeção','Notebook','Mini PC','Geral']
 
 export function CheckOutModal({ item, onClose, onConfirm }) {
   const [clientes, setClientes] = useState([]);
@@ -107,7 +107,7 @@ export function NovoEquipamentoModal({ onClose, onConfirm }) {
             valor_diaria: Number(diaria) || 0 
           })}>Cadastrar equipamento</button>
       </>}>
-      <Field label="Nome do equipamento" placeholder="Ex: Betoneira 400L" value={nome} onChange={(e) => setNome(e.target.value)} />
+      <Field label="Nome do equipamento" placeholder="Ex: Projetor" value={nome} onChange={(e) => setNome(e.target.value)} />
       <NativeSelect label="Categoria" value={cat} onChange={(e) => setCat(e.target.value)} placeholder="Selecione a categoria" options={CATEGORIAS_FIXAS} />
       <div className="row2">
         <Field label="Nº de patrimônio" placeholder="EQ-0000" value={pat} onChange={(e) => setPat(e.target.value)} />
