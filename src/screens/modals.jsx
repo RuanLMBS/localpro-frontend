@@ -140,7 +140,7 @@ export function NovoClienteModal({ onClose, onConfirm }) {
           })}>Cadastrar cliente</button>
       </>}>
       
-      <Field label="Nome ou Razão Social" placeholder="Ex: Construtora Silva" value={nome} onChange={(e) => setNome(e.target.value)} />
+      <Field label="Nome ou Razão Social" placeholder="Ex: Silva Audiovisual" value={nome} onChange={(e) => setNome(e.target.value)} />
       <Field label="CNPJ" placeholder="00.000.000/0000-00" value={cnpj} onChange={(e) => setCnpj(e.target.value)} />
       
       <div className="row2">
