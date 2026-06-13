@@ -1,6 +1,5 @@
-// LocaPro — dados mock e helpers de domínio.
-// "Hoje" fixo para os cálculos de prazo baterem com os dados de exemplo.
-export const TODAY = new Date(2026, 5, 5) // 05/06/2026
+
+export const TODAY = new Date(2026, 5, 5)
 
 export const STATUS = {
   DISPONIVEL: 'Disponível',
@@ -45,7 +44,6 @@ export const CLIENTES = [
   { nome: 'Construrium S.A.', cnpj: '11.999.888/0001-77', contato: 'compras@construrium.com', ativos: 5, ativo: true },
 ]
 
-// dd/mm/yyyy -> Date
 export function parseBR(str) {
   if (!str) return null
   const [d, m, y] = str.split('/').map(Number)
@@ -62,7 +60,6 @@ function daysBetween(a, b) {
   return Math.round((a - b) / 86400000)
 }
 
-// Retorna { label, color } do prazo de uma devolução prevista.
 export function prazoFor(devolucao) {
   const date = parseBR(devolucao)
   if (!date) return { label: '—', color: 'muted' }
